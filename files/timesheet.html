@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tasks page</title>
+    <script defer src="/javascripts/timesheet.js"></script>
+    <link rel="stylesheet" href="/css/timesheet.css">
+</head>
+
+<body>
+    <div class="topnav">
+        <a class="active" href="">Timesheet</a>
+        <a href="http://localhost:8080/projects/page?">projects</a>
+        <a href="http://localhost:8080/tasks/page?">Tasks</a>
+        <a  id="logLink">Logout</a>
+    </div>
+
+    <div class="div1">
+        <h1>Home Page</h1>
+    </div>
+    <div class="div1">
+        <input type="search" id="search_sheet" size="180" placeholder="search across site" />
+    </div>
+    <div class="div1">
+        <input type="date" id="start" />
+        <input type="date" id="end" />
+
+    </div>
+
+    <div class="div1">
+        <button id="add">Edit Timesheet</button>
+        <button id="projects">Projects</button>
+        <button id="tasks">Tasks</button>
+    </div>
+    <div class="div1" id="result">
+        <h3 id="error"></h3>
+        <table id="populate_table">
+            <thead>
+                <th>
+                    Date
+                </th>
+                <th>
+                    project
+                </th>
+                <th>
+                    task
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    work hrs
+                </th>
+                <th>
+                    remark
+                </th>
+                <th>
+                    buttons
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+</body>
+
+</html>
