@@ -4,8 +4,9 @@ const path = require("path")
 const connection = require("../connection")
 const { ObjectId } = require('mongodb');
 const { error } = require('console');
+const { checkUser } = require("../middlwares/verifyUser")
 
-router.get("/page", async (req, res) => {
+router.get("/page", checkUser, async (req, res) => {
     let filepath = path.resolve("__dirname", "..", "files", "tasks.html")
     if (filepath) {
         return res.status(200).sendFile(filepath)
@@ -16,8 +17,8 @@ router.get("/page", async (req, res) => {
 router.post("/save", async (req, res) => {
     let user = req.cookies._id;
     console.log(user)
-    let { date, task, description } = req.body;
-    if (!date || !task || !description) {
+    let { task, description } = req.body;
+    if (!task || !description) {
         return res.status(400).json({ "message": "all values are required" })
     }
     try {
@@ -25,26 +26,23 @@ router.post("/save", async (req, res) => {
         console.log("connected successfully")
         const collection = db.collection("tasks");
         console.log("collection connected");
-        let record = await collection.find({ "task": task });
-        let tasks = []
-        for await (const document of record) {
-            console.log(document);
-            tasks.push(document)
-        }
-        console.log(tasks)
-        if (tasks.length > 0) {
+        let record = await collection.findOne({ "task": task });
+        if (record) {
             return res.status(400).json({ "message": "task already exists" })
         }
-        let result = await collection.insertOne({ "task": task, "date": date, "description": description, "addedBy": user })
+        let result = await collection.insertOne({ "task": task, "description": description, "addedBy": user })
         console.log(result)
         if (result.acknowledged == true) {
             return res.status(201).json({ "message": "task added successfully" })
         }
-        return res.status(400).json({ "message": "Task addition failed" })
+        await db.client.close();
     }
     catch (err) {
+        if (err.code === 11000) {
+            return res.status(400).json({ "message": "Task addition failed" })
+        }
         console.error(err)
-        return res.status(500).json({ "message": "task addition failed" })
+        return res.status(500).json({ "message": "internal server error" })
     }
 })
 
@@ -61,6 +59,7 @@ router.get("/shows", async (req, res) => {
             console.log(document);
             tasks.push(document)
         }
+        await db.client.close();
         return res.status(200).json(tasks)
     }
     catch (err) {
@@ -70,7 +69,8 @@ router.get("/shows", async (req, res) => {
 })
 
 router.get("/show", async (req, res) => {
-    let task = req.query.name;
+    let task = req.query.id;
+    let id = new ObjectId(task)
     console.log(task)
     if (!task) {
         return res.status(400).json({ "message": "something went wrong" })
@@ -78,7 +78,8 @@ router.get("/show", async (req, res) => {
     try {
         let db = await connection();
         const collection = db.collection("tasks");
-        const result = await collection.find({ "task": task }).toArray();
+        const result = await collection.find({ "_id": id }).toArray();
+        await db.client.close();
         return res.status(200).json(result)
     }
     catch (err) {
@@ -92,8 +93,9 @@ router.get("/show", async (req, res) => {
 router.put("/update", async (req, res) => {
     let user = req.cookies._id;
     console.log(user)
-    let { oname, date, task, description } = req.body;
-    if (!oname || !date || !task || !description) {
+    let { _id, task, description } = req.body;
+    let id = new ObjectId(_id)
+    if (!task || !description) {
         return res.status(400).json({ "message": "all values are required" })
     }
     try {
@@ -101,24 +103,11 @@ router.put("/update", async (req, res) => {
         console.log("connected successfully")
         const collection = db.collection("tasks");
         console.log("collection connected");
-        //checking if the tasks already exists
-        let record = await collection.find({ "task": task });
-        let tasks = []
-        for await (const document of record) {
-            console.log(document);
-            tasks.push(document)
-        }
-        console.log(tasks)
-        if (tasks.length > 0) {
-            return res.status(400).json({ "message": "task already exists" })
-        }
-        let result = await collection.updateOne({ "task": oname }, { $set: { "date": date, "task": task, "description": description, "updated_by": user } })
+        let result = await collection.updateOne({ "_id": id }, { $set: { "task": task, "description": description, "updated_by": user } })
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "task updated sucessfully" })
         }
-        else {
-            return res.status(400).json({ "message": "task update failed" })
-        }
+        await db.client.close();
     }
     catch (err) {
         console.error(err);
@@ -137,29 +126,33 @@ router.delete("/delete", async (req, res) => {
         console.log("collection connected");
         const collections = db.collection("timesheets");
         console.log("collection connected");
-        let record = await collections.find({ "task": task });
-        let projects = []
-        for await (const document of record) {
-            console.log(document);
-            projects.push(document)
-        }
-        console.log(projects)
-        if (projects.length > 0) {
-            return res.status(400).json({ "message": "do not delete the task" })
-        }
-        //deleting the previous task to map with the id
         let result = await collection.deleteOne({ "task": task })
         console.log(result)
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "task deleted sucessfully" })
         }
-        else {
-            return res.status(400).json({ "message": "task deletion failed" })
-        }
+        await db.client.close();
     }
     catch (err) {
         console.error(err)
         return res.status(500).json({ "message": "something went wrong" })
+    }
+})
+
+router.get("/get", async (req, res) => {
+    let name = req.query.name;
+    console.log(name)
+    try {
+        let db = await connection();
+        const collection = db.collection("tasks");
+        const result = await collection.find({ "task": name }).toArray();
+        console.log(result)
+        await db.client.close();
+        return res.status(200).json(result)
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(400).json({ "message": "something went wrong" })
     }
 })
 

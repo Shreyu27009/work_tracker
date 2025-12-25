@@ -26,9 +26,6 @@
         <table id="populate_table">
             <thead>
                 <th>
-                    Date
-                </th>
-                <th>
                     Projects
                 </th>
                 <th>
@@ -44,6 +41,16 @@
                 </tr>
             </tbody>
         </table>
+        <form id="form_cell">
+             <label for="project_id" style="margin-right: 20px; display:none;"> Project Name </label>
+            <input type="text" id="project_id" style="width: 300px; margin-top: 20px; margin-right: 20px;display:none">
+            <label for="projectName" style="margin-right: 20px;"> Project Name </label>
+            <input type="text" id="projectName" style="width: 300px; margin-top: 20px; margin-right: 20px;">
+            <label for="projectDescription" style="margin-right: 20px;"> Project description </label>
+            <input type="text" id="projectDescription" style="width: 300px; margin-top: 20px; margin-right: 30px;">
+            <button id="submitBtn" style="flex-basis: 70%;"> submit </button>
+        </form>
+    </div>
 </body>
 
 </html>

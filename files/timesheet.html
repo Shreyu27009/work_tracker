@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tasks page</title>
+    <title>home page</title>
     <script defer src="/javascripts/timesheet.js"></script>
     <link rel="stylesheet" href="/css/timesheet.css">
 </head>
@@ -14,7 +14,7 @@
         <a class="active" href="">Timesheet</a>
         <a href="http://localhost:8080/projects/page?">projects</a>
         <a href="http://localhost:8080/tasks/page?">Tasks</a>
-        <a  id="logLink">Logout</a>
+        <a id="logLink">Logout</a>
     </div>
 
     <div class="div1">
@@ -30,9 +30,7 @@
     </div>
 
     <div class="div1">
-        <button id="add">Edit Timesheet</button>
-        <button id="projects">Projects</button>
-        <button id="tasks">Tasks</button>
+        <button id="add">Add Timesheet</button>
     </div>
     <div class="div1" id="result">
         <h3 id="error"></h3>
@@ -66,6 +64,29 @@
                 </tr>
             </tbody>
         </table>
+        <form id="form_cell" style="display: none;">
+            <button id="backbtn" style="width: 50px;";>back</button>
+            <label for="taskDate">Enter date</label>
+            <input type="date" id="taskDate">
+
+            <label for="select_project">Enter project</label>
+            <select id="select_project"></select>
+
+            <label for="select_task">Enter task</label>
+            <select id="select_task"></select>
+
+            <label for="description">Description</label>
+            <textarea id="description" maxlength="200"></textarea>
+
+            <label for="work_hrs">hrs to work</label>
+            <input type="number" id="work_hrs" min="0" max="24">
+
+            <label for="remark">remark</label>
+            <input type="text" id="remark">
+
+            <button type="button" id="submitBtn">submit</button>
+        </form>
+    </div>
 </body>
 
 </html>

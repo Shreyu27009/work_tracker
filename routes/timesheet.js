@@ -4,8 +4,8 @@ const path = require("path")
 const connection = require("../connection")
 const { ObjectId } = require('mongodb');
 const { error } = require('console');
-
-router.get("/page", async (req, res) => {
+const { checkUser } = require("../middlwares/verifyUser")
+router.get("/page", checkUser, async (req, res) => {
     let filepath = path.resolve("__dirname", "..", "files", "timesheet.html")
     console.log(filepath)
     if (filepath) {
@@ -63,38 +63,6 @@ router.get("/shows", async function (req, res) {
     }
 })
 
-//for checking whether project/tasks exists or not
-router.get("/check", async function (req, res) {
-    try {
-        let user = req.cookies._id;
-        let db = await connection();
-        console.log("connected successfully")
-        const collection = db.collection("timesheets");
-        console.log("collection connected")
-        let projects = []
-        let tasks = []
-        const result = collection.find({ "addedBy": user });
-        for await (const document of result) {
-            projects.push(document.project)
-            tasks.push(document.task)
-        }
-        console.log(projects)
-        console.log(tasks)
-        //for the projects
-        let record1 = db.collection("projects")
-        const existingDocs = await record1.find({
-            project: { $in: projects }
-        }).toArray();
-        console.log(existingDocs)
-        if (existingDocs.length === 0) {
-            return res.status(400).json({ "message": "some projects has been updated" })
-        }
-        return res.status(200).json({ "message": "nothing to show" })
-    }
-    catch (err) {
-        return res.status(500).json({ "message": "internal server error" })
-    }
-})
 
 //for getting the timesheet based on the _id
 router.get("/show", async function (req, res) {

@@ -26,9 +26,6 @@
         <table id="populate_table">
             <thead>
                 <th>
-                    Date
-                </th>
-                <th>
                     tasks
                 </th>
                 <th>
@@ -44,6 +41,16 @@
                 </tr>
             </tbody>
         </table>
+        <form id="form_cell" style="display: none;">
+            <label for="task_id" style="margin-right: 20px; display:none;"> task Name </label>
+            <input type="text" id="task_id" style="width: 300px; margin-top: 20px; margin-right: 20px;display:none">
+            <label for="task_name" style="margin-right: 20px;"> task Name </label>
+            <input type="text" id="task_name" style="width: 300px; margin-top: 20px; margin-right: 20px;">
+            <label for="task_description" style="margin-right: 20px;"> task description </label>
+            <input type="text" id="task_description" style="width: 300px; margin-top: 20px; margin-right: 30px;">
+            <button id="submitBtn" style="flex-basis: 70%;"> submit </button>
+        </form>
+    </div>
 </body>
 
 </html>

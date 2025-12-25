@@ -1,22 +1,27 @@
-setInterval(() => {
-    let cookie = document.cookie
-    if (cookie === "") {
-        window.location.href = "http://localhost:8080/users/login/page"
-    }
-}, 1000)
+let backBtn = document.getElementById("projects")
+backBtn.addEventListener("click", function (e) {
+    let table = document.getElementById("populate_table")
+    table.style.display = ""
+    let form = document.getElementById("form_cell")
+    console.log(form)
+    form.style.display = "none"
+})
 let button = document.getElementById("add")
 button.addEventListener("click", async function addData(e) {
     let table = document.getElementById("populate_table")
     table.style.display = "none"
-    getForm()
+    let form = document.getElementById("form_cell")
+    console.log(form)
+    form.style.display = "block"
     let submitbtn = document.getElementById("submitBtn")
     submitbtn.addEventListener("click", async function saveProject(e) {
-        let value1 = document.getElementById("dates").value;
-        let value2 = document.getElementById("taskName").value.toLowerCase().trim();
-        let value3 = document.getElementById("taskDescription").value;
-        console.log(value1, value2, value3)
+        let value2 = document.getElementById("task_name").value.toLowerCase().trim();
+        let value3 = document.getElementById("task_description").value;
+        if (!value2 || !value3) {
+            e.preventDefault()
+        }
+        console.log(value2, value3)
         const postData = {
-            "date": value1,
             "task": value2,
             "description": value3
         }
@@ -40,8 +45,6 @@ button.addEventListener("click", async function addData(e) {
     }
 
     )
-
-
 }
 
 )
@@ -86,7 +89,8 @@ async function fetchTasks(params) {
         data.forEach(rowData => {
             row1 = document.createElement('tr');
 
-            const newCel = createCell(rowData.date)
+            const newCel = createCell(rowData._id)
+            newCel.style.display = "none"
             row1.appendChild(newCel);
 
             const newCell = createCell(rowData.task)
@@ -113,9 +117,10 @@ fetchTasks()
 document.body.addEventListener("click", (e) => {
     if (e.target.matches(".updateBtn")) {
         const rowtoScore = e.target.closest('tr')
-        let task_name = rowtoScore.querySelectorAll("td")[1].textContent
+        let task_id = rowtoScore.querySelectorAll("td")[0].textContent
+        console.log(task_id)
         async function getTask(params) {
-            let response = await fetch(`http://localhost:8080/tasks/show?name=${task_name}`, {
+            let response = await fetch(`http://localhost:8080/tasks/show?id=${task_id}`, {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,116 +130,61 @@ document.body.addEventListener("click", (e) => {
             let data = await response.json()
             let table = document.getElementById("populate_table")
             table.style.display = "none"
+            let form_cell = document.getElementById("form_cell")
+            console.log(form_cell)
+            form_cell.style.display = "block"
             data.forEach(rowData => {
-                let form_cell = document.getElementById("form_cell")
-                if (!form_cell) {
-                    let form_cell = document.createElement("form")
-                    form_cell.setAttribute("id", "form_cell")
-                    let lable1 = document.createElement("label")
-                    lable1.for = 'taskdate'
-                    lable1.textContent = "Task Date"
-                    lable1.style.marginRight = "20px"
-                    form_cell.appendChild(lable1)
+                let task_id = document.getElementById("task_id")
+                task_id.value = `${rowData._id}`
+                console.log(task_id)
 
-                    let input1 = document.createElement("input")
-                    input1.type = "date"
-                    input1.min = "2024-01-01"
-                    input1.max = "2025-12-31"
-                    input1.id = "dates"
-                    input1.value = `${rowData.date}`
-                    input1.style.width = "300px"
-                    input1.style.marginRight = "40px"
-                    form_cell.appendChild(input1)
+                let task_name = document.getElementById("task_name")
+                task_name.value = `${rowData.task}`
+                console.log(task_name)
 
-                    let lable = document.createElement("label")
-                    lable.for = 'task_name'
-                    lable.textContent = "Task Name"
-                    lable.style.marginRight = "20px"
-                    form_cell.appendChild(lable)
+                let task_description = document.getElementById("task_description")
+                task_description.value = `${rowData.description}`
+                console.log(task_description)
 
-                    let input = document.createElement("input")
-                    input.type = "text"
-                    input.style.width = "300px"
-                    input.id = "task_name"
-                    input.readOnly = true
-                    input.value = `${rowData.task}`
-                    input.style.marginTop = "20px"
-                    input.style.marginRight = "20px"
-                    form_cell.appendChild(input)
 
-                    let lable2 = document.createElement("label")
-                    lable2.for = 'taskName'
-                    lable2.textContent = "New Name"
-                    lable2.style.marginRight = "20px"
-                    form_cell.appendChild(lable2)
-
-                    let input2 = document.createElement("input")
-                    input2.type = "text"
-                    input2.style.width = "300px"
-                    input2.id = "taskName"
-                    input2.value = `${rowData.task}`
-                    input2.style.marginTop = "20px"
-                    input2.style.marginRight = "20px"
-                    form_cell.appendChild(input2)
-
-                    let lable3 = document.createElement("label")
-                    lable3.for = 'taskDescription'
-                    lable3.textContent = "Task Description"
-                    lable3.style.marginRight = "20px"
-                    form_cell.appendChild(lable3)
-
-                    let input3 = document.createElement("input")
-                    input3.type = "text"
-                    input3.value = `${rowData.description}`
-                    input3.style.width = "300px"
-                    input3.style.marginTop = "20px"
-                    input3.style.marginRight = "30px"
-                    input3.id = "taskDescription"
-                    form_cell.appendChild(input3)
-
-                    let submitbtn = document.createElement("button")
-                    submitbtn.textContent = "submit"
-                    submitbtn.style.flexBasis = "70%"
-                    submitbtn.id = "submitBtn"
-                    form_cell.appendChild(submitbtn)
-                    document.getElementById("result").appendChild(form_cell)
-                    submitbtn.addEventListener("click", async function (e) {
-                        let o_value = document.getElementById("task_name").value.toLowerCase().trim();
-                        let value1 = document.getElementById("dates").value;
-                        let value2 = document.getElementById("taskName").value.toLowerCase().trim();
-                        let value3 = document.getElementById("taskDescription").value;
-                        let postData = {
-                            oname: o_value,
-                            date: value1,
-                            task: value2,
-                            description: value3
-                        }
-                        console.log(postData)
-                        const url = `http://localhost:8080/tasks/update`
-                        console.log(postData)
-                        const response = await fetch(url, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(postData),
-                        })
-                        const data = await response.json();
-                        console.log(data)
-                        if (response.status == 200) {
-                            alert(`${data.message}`)
-                        }
-                        if (response.status === 400 || response.status === 500) {
-                            alert(`${data.message}`)
-                        }
-                    })
-                }
-            });
-
-        }
+            })
+        };
         getTask()
-
+        document.getElementById("submitBtn").addEventListener("click", async function updateData(e) {
+            let value1 = document.getElementById("task_id").value;
+            let value2 = document.getElementById("task_name").value.toLowerCase().trim();
+            let value3 = document.getElementById("task_description").value
+            console.log(value2, value3)
+            if (!value2 || !value3) {
+                alert("all values are required")
+                e.preventDefault()
+            }
+            const postData = {
+                _id: value1,
+                task: value2,
+                description: value3
+            };
+            const url = `http://localhost:8080/tasks/update`
+            console.log(postData)
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(postData),
+            })
+            const data = await response.json();
+            console.log(data)
+            if (response.status == 200) {
+                alert(`${data.message}`)
+            }
+            if (response.status == 400) {
+                e.preventDefault();
+                alert(`${data.message}`)
+            }
+        })
     }
+
     if (e.target.matches(".deleteBtn")) {
         const rowtoScore = e.target.closest('tr')
         let task_name = rowtoScore.querySelectorAll("td")[1].textContent
@@ -264,62 +214,25 @@ document.body.addEventListener("click", (e) => {
 
         }
         deleteTask()
+
     }
 })
 
-async function getForm() {
-    let form_cell = document.getElementById("form_cell")
-    if (!form_cell) {
-        let form_cell = document.createElement("form")
-        form_cell.setAttribute("id", "form_cell")
-        let lable1 = document.createElement("label")
-        lable1.for = 'taskdate'
-        lable1.textContent = "Task Date"
-        lable1.style.marginRight = "20px"
-        form_cell.appendChild(lable1)
+let inputElement = document.getElementById("task_name")
 
-        let input1 = document.createElement("input")
-        input1.type = "date"
-        input1.min = "2024-01-01"
-        input1.max = "2025-12-31"
-        input1.id = "dates"
-        input1.style.width = "300px"
-        input1.style.marginRight = "40px"
-        form_cell.appendChild(input1)
-
-        let lable2 = document.createElement("label")
-        lable2.for = 'taskName'
-        lable2.textContent = "Task Name"
-        lable2.style.marginRight = "20px"
-        form_cell.appendChild(lable2)
-
-        let input2 = document.createElement("input")
-        input2.type = "text"
-        input2.style.width = "300px"
-        input2.id = "taskName"
-        input2.style.marginTop = "20px"
-        input2.style.marginRight = "20px"
-        form_cell.appendChild(input2)
-
-        let lable3 = document.createElement("label")
-        lable3.for = 'taskDescription'
-        lable3.textContent = "Task Description"
-        lable3.style.marginRight = "20px"
-        form_cell.appendChild(lable3)
-
-        let input3 = document.createElement("input")
-        input3.type = "text"
-        input3.style.width = "300px"
-        input3.style.marginTop = "20px"
-        input3.style.marginRight = "30px"
-        input3.id = "taskDescription"
-        form_cell.appendChild(input3)
-
-        let submitbtn = document.createElement("button")
-        submitbtn.textContent = "submit"
-        submitbtn.style.flexBasis = "70%"
-        submitbtn.id = "submitBtn"
-        form_cell.appendChild(submitbtn)
-        document.getElementById("result").appendChild(form_cell)
+inputElement.addEventListener('change', async function (e) {
+    let value = e.target.value.toLowerCase().trim();
+    let response = await fetch(`http://localhost:8080/tasks/get?name=${value}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
     }
-}
+    )
+    let data = await response.json()
+    if (data.length > 0) {
+        alert("task already exists")
+    }
+});
+
+

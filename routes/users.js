@@ -3,12 +3,13 @@ const router = express.Router();
 const path = require("path")
 const connection = require("../connection")
 const { ObjectId } = require('mongodb');
+const { authenticateUser } = require("../middlwares/verifyUser")
 const e = require('express');
 const bcrypt = require("bcrypt");
 const { error } = require('console');
 
 
-router.get("/signup/page", async (req, res) => {
+router.get("/signup/page", authenticateUser, async (req, res) => {
     let filepath = path.resolve("__dirname", "..", "files", "signup.html")
     console.log(filepath)
     if (filepath) {
@@ -35,16 +36,20 @@ router.post("/signup/save", async (req, res) => {
         let result = await collection.insertOne({ "_id": email, "password": encryptedPassword })
         console.log(result)
         if (result.acknowledged == true) {
-            return res.status(200).json({ "message": "data inserted successfully" })
+            return res.status(200).json({ "message": "user registered successfully" })
         }
+        await db.client.close()
     }
     catch (err) {
+        if (err.code === 11000) {
+            return res.status(400).json({ "message": "user already exists" })
+        }
         console.error(err)
         return res.status(500).json({ "message": "internal server error" })
     }
 })
 
-router.get("/login/page", async (req, res) => {
+router.get("/login/page", authenticateUser, async (req, res) => {
     let filepath = path.resolve("__dirname", "..", "files", "login.html")
     console.log(filepath)
     if (filepath) {
@@ -77,14 +82,17 @@ router.post("/login", async (req, res) => {
                     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 }
                 console.log(user._id)
+                await db.client.close()
                 return res.status(200).cookie('_id', user._id, options).json({
                     success: true,
                     user
                 })
+
             }
             else {
                 return res.status(400).json({ "message": "password mismatch" });
             }
+
 
         }
     }

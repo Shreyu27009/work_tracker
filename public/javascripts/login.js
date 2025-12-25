@@ -5,6 +5,9 @@ document.getElementById("loginbtn").addEventListener("click", saveUser)
 async function saveUser() {
     let value1 = document.getElementById("email").value;
     let value2 = document.getElementById("password").value;
+    if(!value1||!value2){
+        alert("all values are required")
+    }
     const postData = {
         "email": value1,
         "password": value2
@@ -21,8 +24,11 @@ async function saveUser() {
         alert("user verified successfully")
         window.location.href = "http://localhost:8080/home/page"
     }
-    if (response.status == 400 || response.status==404) {
-         alert(`${data.message}`)
+    if ( response.status==404) {
+         alert("please register to continue")
+    }
+    if(response.status===400){
+        alert(`${data.message}`)
     }
 }
 

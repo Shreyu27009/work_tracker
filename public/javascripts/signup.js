@@ -21,12 +21,9 @@ async function saveUser() {
         alert(`${data.message}`)
         window.location.href = "http://localhost:8080/users/login/page"
     }
-    if (response.status == 500) {
+    if (response.status == 400 ) {
         alert("user already exists")
         window.location.href = "http://localhost:8080/users/login/page"
-    }
-    if (response.status == 400) {
-        alert("all values are required")
     }
 }
 

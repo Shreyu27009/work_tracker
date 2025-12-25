@@ -27,5 +27,6 @@
         button {
             font-size: 40px;
             border-radius: 12px;
+            margin-top: 20px;
             background-color: beige;
         }
