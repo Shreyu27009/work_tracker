@@ -164,7 +164,7 @@ function buttoncell() {
     cell.appendChild(deleteBtn)
     return cell;
 }
-async function getData(params) {
+async function getData() {
     let response = await fetch("http://localhost:8080/home/shows", {
         method: "GET",
         headers: {
@@ -401,8 +401,9 @@ document.body.addEventListener("click", (e) => {
 
 
 //search across the timesheet
-async function searchData() {
+/*async function searchData() {
     let data = await getData()
+    console.log(data)
     let search_input = document.getElementById("search_sheet")
     search_input.addEventListener("input", async function searchSheet(e) {
         const value = e.target.value.trim().toLowerCase();
@@ -454,7 +455,7 @@ async function searchData() {
 
     })
 }
-searchData()
+searchData()*/
 
 
 //for search by dates

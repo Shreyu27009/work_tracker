@@ -32,8 +32,8 @@ router.post("/save", async (req, res) => {
         const collection = db.collection("timesheets");
         console.log("collection connected");
         let result = collection.insertOne({ "date": date, "project": project, "task": task, "description": description, "work_hrs": work_hrs, "remark": remark, "addedBy": user })
-        await db.client.close()
         return res.status(201).json({ "message": "added successfully" })
+       
 
     }
     catch (err) {
