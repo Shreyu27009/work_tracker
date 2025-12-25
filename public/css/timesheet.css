@@ -10,6 +10,9 @@
      background-color: beige;
      margin-right: 20px;
      width: 30%;
+     margin-left: auto;
+     margin-right: auto;
+
  }
 
  .div1 {
@@ -70,4 +73,28 @@
      color: white;
  }
 
- 
+ label {
+     display: block;
+     margin-bottom: 5px;
+     font-size: 16px;
+     text-align: center;
+ }
+
+ input,
+ textarea,
+ select {
+     width: 30%;
+     margin-bottom: 15px;
+     border-radius: 4px;
+     font-size: 16px;
+
+     margin-left: auto;
+     margin-right: auto;
+     display: block;
+ }
+
+ form {
+     width: 50%;
+     margin-left: auto;
+     margin-right: auto;
+ }
