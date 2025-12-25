@@ -32,6 +32,7 @@ router.post("/save", async (req, res) => {
         const collection = db.collection("timesheets");
         console.log("collection connected");
         let result = collection.insertOne({ "date": date, "project": project, "task": task, "description": description, "work_hrs": work_hrs, "remark": remark, "addedBy": user })
+        await db.client.close()
         return res.status(201).json({ "message": "added successfully" })
 
     }
@@ -56,6 +57,7 @@ router.get("/shows", async function (req, res) {
             console.log(document);
             timesheets.push(document)
         }
+        await db.client.close()
         return res.status(200).json(timesheets)
     }
     catch (err) {
@@ -77,6 +79,7 @@ router.get("/show", async function (req, res) {
         console.log("collection connected")
         const result = await collection.find({ "_id": id, "addedBy": `${user}` }).toArray();
         console.log(result)
+        await db.client.close()
         return res.status(200).json(result)
     }
     catch (err) {
@@ -107,8 +110,7 @@ router.put("/update", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "updated successfully" })
         }
-        return res.status(400).json({ "message": "timesheet update failed with error 400" })
-
+        await db.client.close()
 
     }
     catch (err) {
@@ -131,7 +133,7 @@ router.delete("/delete", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "record deleted successfully" })
         }
-        return res.status(400).json({ "message": "timesheet update failed with error 400" })
+        await db.client.close();
     }
     catch (err) {
         console.error(err);
@@ -161,6 +163,7 @@ router.get("/getBydate", async (req, res) => {
             console.log(document);
             timesheets.push(document)
         }
+        await db.client.close()
         return res.status(200).json(timesheets)
     }
     catch (err) {

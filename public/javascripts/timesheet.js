@@ -65,7 +65,7 @@ document.getElementById("add").addEventListener("click", async function addData(
         let data = await response.json()
         console.log(data)
         let select = document.getElementById("select_task")
-        select.innerHTML=""
+        select.innerHTML = ""
         let emptyOption = document.createElement('option');
         emptyOption.value = '';
         emptyOption.textContent = '';
@@ -270,7 +270,6 @@ document.body.addEventListener("click", (e) => {
                 }
 
                 fetchProjects()
-
 
                 //for getting the task
                 async function fetchProjects2() {
