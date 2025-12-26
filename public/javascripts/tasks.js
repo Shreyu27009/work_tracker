@@ -15,7 +15,7 @@ button.addEventListener("click", async function addData(e) {
     form.style.display = "block"
     let submitbtn = document.getElementById("submitBtn")
     submitbtn.addEventListener("click", async function saveProject(e) {
-        let value2 = document.getElementById("task_name").value.toLowerCase().trim();
+        let value2 = document.getElementById("task_name").value.trim();
         let value3 = document.getElementById("task_description").value;
         if (!value2 || !value3) {
             e.preventDefault()
@@ -150,9 +150,11 @@ document.body.addEventListener("click", (e) => {
             })
         };
         getTask()
+        let button = document.getElementById("add")
+        button.style.display = "none"
         document.getElementById("submitBtn").addEventListener("click", async function updateData(e) {
             let value1 = document.getElementById("task_id").value;
-            let value2 = document.getElementById("task_name").value.toLowerCase().trim();
+            let value2 = document.getElementById("task_name").value.trim();
             let value3 = document.getElementById("task_description").value
             console.log(value2, value3)
             if (!value2 || !value3) {
@@ -177,6 +179,8 @@ document.body.addEventListener("click", (e) => {
             console.log(data)
             if (response.status == 200) {
                 alert(`${data.message}`)
+                let button = document.getElementById("add")
+                button.style.display = ""
             }
             if (response.status == 400) {
                 e.preventDefault();

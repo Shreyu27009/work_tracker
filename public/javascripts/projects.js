@@ -21,7 +21,7 @@ async function addProject() {
     form.style.display = "block"
     let submitbtn = document.getElementById("submitBtn")
     submitbtn.addEventListener("click", async function saveProject(e) {
-        let value2 = document.getElementById("projectName").value.toLowerCase().trim();
+        let value2 = document.getElementById("projectName").value.trim();
         let value3 = document.getElementById("projectDescription").value.trim();
         if (!value2 || !value3) {
             e.preventDefault();
@@ -50,8 +50,6 @@ async function addProject() {
     }
 
     )
-    form_cell.appendChild(submitbtn)
-    document.getElementById("result").appendChild(form_cell)
 
 }
 
@@ -140,6 +138,8 @@ document.body.addEventListener("click", function (e) {
         let form_cell = document.getElementById("form_cell")
         console.log(form_cell)
         form_cell.style.display = "block"
+        let button = document.getElementById("add")
+        button.style.display = "none"
         async function fetchProject() {
             let response = await fetch(`http://localhost:8080/projects/shows?id=${project_id}`, {
                 method: "GET",
@@ -171,7 +171,7 @@ document.body.addEventListener("click", function (e) {
         fetchProject()
         document.getElementById("submitBtn").addEventListener("click", async function updateData(e) {
             let value1 = document.getElementById("project_id").value;
-            let value2 = document.getElementById("projectName").value.toLowerCase().trim();
+            let value2 = document.getElementById("projectName").value.trim();
             let value3 = document.getElementById("projectDescription").value
             console.log(value2, value3)
             if (!value2 || !value3) {
@@ -196,6 +196,8 @@ document.body.addEventListener("click", function (e) {
             console.log(data)
             if (response.status == 200) {
                 alert(`${data.message}`)
+                let button = document.getElementById("add")
+                button.style.display = ""
             }
             if (response.status == 400) {
                 alert(`${data.message}`)
@@ -247,7 +249,7 @@ inputElement.addEventListener('change', async function (e) {
     }
     )
     let data = await response.json()
-    if(data.length>0){
+    if (data.length > 0) {
         alert("project already exists")
     }
 });

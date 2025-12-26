@@ -8,7 +8,16 @@ backBtn.addEventListener("click", function (e) {
     form.style.display = "none"
 })
 
-document.getElementById("add").addEventListener("click", async function addData(params) {
+let addBtn = document.getElementById("add")
+addBtn.style.display = ""
+addBtn.addEventListener("click", async function addData(e) {
+    addBtn.style.display = "none"
+    /*document.getElementById("taskDate").value = "";
+    document.getElementById("select_project").value = "";
+    document.getElementById("select_task").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("work_hrs").value = "";
+    document.getElementById("remark").value = "";*/
     let table = document.getElementById("populate_table")
     table.style.display = "none"
 
@@ -52,7 +61,6 @@ document.getElementById("add").addEventListener("click", async function addData(
         });
     }
     fetchProjects()
-    //for the task
     //for getting the task
     async function fetchProjects2() {
         let response = await fetch("http://localhost:8080/tasks/shows", {
@@ -80,60 +88,117 @@ document.getElementById("add").addEventListener("click", async function addData(
     }
     fetchProjects2()
 
-
-
+    let updateBtn = document.getElementById("updateBtn")
+    updateBtn.style.display = "none"
     let submitbtn = document.getElementById("submitBtn")
-    submitbtn.addEventListener("click", async function saveData(e) {
-        // e.preventDefault()
-        let value1 = document.getElementById("taskDate").value;
-        let value2 = document.getElementById("select_project").value.trim();
-        let value3 = document.getElementById("select_task").value.trim();
-        let value4 = document.getElementById("description").value.toLowerCase().trim();
-        let value5 = document.getElementById("work_hrs").value.trim();
-        let value6 = document.getElementById("remark").value;
-        if (value5 > 24 || value5 < 0) {
-            e.preventDefault();
-        }
-        if (!value1 || !value2 || !value3 || !value4 || !value5) {
-            e.preventDefault()
-        }
-        const postData = {
-            date: value1,
-            project: value2,
-            task: value3,
-            description: value4,
-            work_hrs: value5,
-            remark: value6
-        }
-        let response = await fetch("http://localhost:8080/home/save", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData),
-        }
-        )
-        let data = await response.json()
-        console.log(data)
-        if (response.status === 201) {
-            alert(`${data.message}`)
-            let table = document.getElementById("populate_table")
-            table.style.display = ""
+    submitbtn.style.display = ""
 
-            let form_cell = document.getElementById("form_cell")
-            form_cell.style.display = "none"
-            populateTable()
-
-
-        }
-        if (response.status === 400 || response.status === 500) {
-            e.preventDefault()
-            alert(`${data.message}`)
-        }
-    })
 
 }
 )
+let submitbtn = document.getElementById("submitBtn")
+submitbtn.addEventListener("click", async function saveData(e) {
+    // e.preventDefault()
+    let value1 = document.getElementById("taskDate").value;
+    let value2 = document.getElementById("select_project").value.trim();
+    let value3 = document.getElementById("select_task").value.trim();
+    let value4 = document.getElementById("description").value.toLowerCase().trim();
+    let value5 = document.getElementById("work_hrs").value.trim();
+    let value6 = document.getElementById("remark").value;
+    if (value5 > 24 || value5 <= 0) {
+        e.preventDefault();
+    }
+    if (!value1 || !value2 || !value3 || !value4 || !value5) {
+        e.preventDefault()
+    }
+    const postData = {
+        date: value1,
+        project: value2,
+        task: value3,
+        description: value4,
+        work_hrs: value5,
+        remark: value6
+    }
+    let response = await fetch("http://localhost:8080/home/save", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    }
+    )
+    let data = await response.json()
+    console.log(data)
+    if (response.status === 201) {
+        alert(`${data.message}`)
+        let table = document.getElementById("populate_table")
+        table.style.display = ""
+
+        let addBtn = document.getElementById("add")
+        addBtn.style.display = ""
+
+        let form_cell = document.getElementById("form_cell")
+        form_cell.style.display = "none"
+        populateTable()
+
+
+    }
+    if (response.status === 400 || response.status === 500) {
+        e.preventDefault()
+        alert(`${data.message}`)
+    }
+})
+
+let updateBtn = document.getElementById("updateBtn")
+updateBtn.addEventListener("click", async function updateData(e) {
+    e.preventDefault()
+    let value = document.getElementById("timesheet_id").value
+    let value1 = document.getElementById("taskDate").value;
+    let value2 = document.getElementById("select_project").value;
+    let value3 = document.getElementById("select_task").value;
+    let value4 = document.getElementById("description").value;
+    let value5 = document.getElementById("work_hrs").value;
+    let value6 = document.getElementById("remark").value;
+    console.log(value, value1, value2, value3, value4, value5, value6)
+    const postData = {
+        _id: value,
+        date: value1,
+        project: value2,
+        task: value3,
+        description: value4,
+        work_hrs: value5,
+        remark: value6
+    }
+    let response = await fetch("http://localhost:8080/home/update", {
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    }
+    )
+    let data = await response.json()
+    if (response.status === 200) {
+        alert(`${data.message}`)
+        let table = document.getElementById("populate_table")
+        table.style.display = ""
+
+        let form_cell = document.getElementById("form_cell")
+        form_cell.style.display = "none"
+        let addBtn = document.getElementById("add")
+        addBtn.style.display = ""
+        populateTable()
+        document.getElementById("taskDate").value = "";
+        document.getElementById("select_project").value = "";
+        document.getElementById("select_task").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("work_hrs").value = "";
+        document.getElementById("remark").value = "";
+    }
+    if (response.status === 400 || response.status === 500) {
+        alert(`${data.message}`)
+    }
+})
 
 function createCell(title) {
     const cell = document.createElement('td');
@@ -307,60 +372,18 @@ document.body.addEventListener("click", (e) => {
                 remark.value = `${rowData.remark}`
 
                 //for getting the id of the timesheet
+                let id = document.getElementById("timesheet_id")
                 console.log(rowData._id)
-                let input5 = document.createElement("input")
-                input5.type = "text"
-                input5.style.display = "none"
-                input5.style.width = "300px"
-                input5.id = "timesheet_id"
-                input5.style.marginTop = "20px"
-                input5.style.marginRight = "20px"
-                input5.value = `${rowData._id}`
-                form_cell.appendChild(input5)
-                console.log(input5)
+                id.value = `${rowData._id}`
+                console.log(id)
 
                 let submitbtn = document.getElementById("submitBtn")
-                console.log(submitbtn)
-                submitbtn.addEventListener("click", async function updateData(e) {
-                    let value = document.getElementById("timesheet_id").value
-                    let value1 = document.getElementById("taskDate").value;
-                    let value2 = document.getElementById("select_project").value;
-                    let value3 = document.getElementById("select_task").value;
-                    let value4 = document.getElementById("description").value;
-                    let value5 = document.getElementById("work_hrs").value;
-                    let value6 = document.getElementById("remark").value;
-                    console.log(value, value1, value2, value3, value4, value5, value6)
-                    const postData = {
-                        _id: value,
-                        date: value1,
-                        project: value2,
-                        task: value3,
-                        description: value4,
-                        work_hrs: value5,
-                        remark: value6
-                    }
-                    let response = await fetch("http://localhost:8080/home/update", {
-                        method: "PUT",
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(postData),
-                    }
-                    )
-                    let data = await response.json()
-                    if (response.status === 200) {
-                        alert(`${data.message}`)
-                        let table = document.getElementById("populate_table")
-                        table.style.display = ""
+                submitbtn.style.display = "none"
+                let updateBtn = document.getElementById("updateBtn")
+                updateBtn.style.display = ""
+                let addBtn = document.getElementById("add")
+                addBtn.style.display = "none"
 
-                        let form_cell = document.getElementById("form_cell")
-                        form_cell.style.display = "none"
-                        populateTable()
-                    }
-                    if (response.status === 400 || response.status === 500) {
-                        alert(`${data.message}`)
-                    }
-                })
             })
         }
         getSheet()

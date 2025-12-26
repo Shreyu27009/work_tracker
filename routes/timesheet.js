@@ -23,7 +23,7 @@ router.post("/save", async (req, res) => {
     if (!date || !project || !task || !description || !work_hrs) {
         return res.status(400).json({ "message": "all values are required" })
     }
-    if (work_hrs < 0 || work_hrs > 24) {
+    if (work_hrs < 0 || work_hrs >= 24||work_hrs==0||work_hrs==24) {
         return res.status(400).json({ "message": "invalid hours of work" })
     }
     try {
