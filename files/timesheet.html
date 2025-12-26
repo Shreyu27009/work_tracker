@@ -16,9 +16,19 @@
         <a href="http://localhost:8080/tasks/page?">Tasks</a>
         <a id="logLink">Logout</a>
     </div>
-
     <div class="div1">
         <h1>Home Page</h1>
+    </div>
+    <div class="div1">
+        <input type="search" id="sheet_search" placeholder="search across site" />
+    </div>
+    <div class="div1">
+        <label for="project_Select">select project</label>
+        <select id="project_Select"></select>
+
+        <label for="task_select">select task</label>
+        <select id="task_select"></select>
+
     </div>
     <div class="div1">
         <input type="date" id="start" />
@@ -84,7 +94,7 @@
             <input type="text" id="remark">
             <input type="text" id="timesheet_id" style="display: none;">
             <button type="button" id="submitBtn">submit</button>
-              <button type="button" id="updateBtn">update</button>
+            <button type="button" id="updateBtn">update</button>
         </form>
     </div>
 </body>

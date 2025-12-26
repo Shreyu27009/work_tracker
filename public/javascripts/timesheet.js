@@ -1,3 +1,70 @@
+let time_data = [];
+async function getData() {
+    let response = await fetch("http://localhost:8080/home/shows", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    )
+    let data = await response.json()
+    if (response.status === 200) {
+        time_data = data;
+        console.log("time_data :", time_data)
+        return data;
+    }
+}
+fetchProjects("project_Select")
+fetchTasks2("task_select")
+async function fetchProjects(select_id) {
+    let response = await fetch("http://localhost:8080/projects/show", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    )
+    let data = await response.json()
+    console.log(data)
+    let select = document.getElementById(select_id)
+    select.innerHTML = ""
+    let emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = '';
+    select.prepend(emptyOption);
+    data.forEach(Element => {
+        let select = document.getElementById(select_id)
+        let option = document.createElement("option");
+        option.value = Element.project;
+        option.textContent = Element.project;
+        select.appendChild(option);
+    });
+}
+
+async function fetchTasks2(select_id) {
+    let response = await fetch("http://localhost:8080/tasks/shows", {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+    )
+    let data = await response.json()
+    console.log(data)
+    let select = document.getElementById(select_id)
+    select.innerHTML = ""
+    let emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = '';
+    select.prepend(emptyOption);
+    data.forEach(Element => {
+        let select2 = document.getElementById(select_id)
+        let option = document.createElement("option");
+        option.value = Element.task;
+        option.textContent = Element.task;
+        select2.appendChild(option);
+    });
+}
 
 let backBtn = document.getElementById("backbtn")
 backBtn.addEventListener("click", function (e) {
@@ -36,63 +103,14 @@ addBtn.addEventListener("click", async function addData(e) {
     input1.max = `${formattedDate}`
 
     //for getting the project
-    async function fetchProjects() {
-        let response = await fetch("http://localhost:8080/projects/show", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-        )
-        let data = await response.json()
-        console.log(data)
-        let select = document.getElementById("select_project")
-        select.innerHTML = ""
-        let emptyOption = document.createElement('option');
-        emptyOption.value = '';
-        emptyOption.textContent = '';
-        select.prepend(emptyOption);
-        data.forEach(Element => {
-            let select = document.getElementById("select_project")
-            let option = document.createElement("option");
-            option.value = Element.project;
-            option.textContent = Element.project;
-            select.appendChild(option);
-        });
-    }
-    fetchProjects()
+    fetchProjects('select_project')
     //for getting the task
-    async function fetchProjects2() {
-        let response = await fetch("http://localhost:8080/tasks/shows", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-        )
-        let data = await response.json()
-        console.log(data)
-        let select = document.getElementById("select_task")
-        select.innerHTML = ""
-        let emptyOption = document.createElement('option');
-        emptyOption.value = '';
-        emptyOption.textContent = '';
-        select.prepend(emptyOption);
-        data.forEach(Element => {
-            let select2 = document.getElementById("select_task")
-            let option = document.createElement("option");
-            option.value = Element.task;
-            option.textContent = Element.task;
-            select2.appendChild(option);
-        });
-    }
-    fetchProjects2()
+    fetchTasks2("select_task")
 
     let updateBtn = document.getElementById("updateBtn")
     updateBtn.style.display = "none"
     let submitbtn = document.getElementById("submitBtn")
     submitbtn.style.display = ""
-
 
 }
 )
@@ -229,20 +247,9 @@ function buttoncell() {
     cell.appendChild(deleteBtn)
     return cell;
 }
-async function getData() {
-    let response = await fetch("http://localhost:8080/home/shows", {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }
-    )
-    let data = await response.json()
-    if (response.status === 200) {
-        return data;
-    }
+//for getting the data
 
-}
+
 async function populateTable() {
     let data = await getData()
     let table = document.getElementById("populate_table")
@@ -423,18 +430,20 @@ document.body.addEventListener("click", (e) => {
 })
 
 
+
 //search across the timesheet
-/*async function searchData() {
-    let data = await getData()
-    console.log(data)
-    let search_input = document.getElementById("search_sheet")
+async function searchData() {
+    let search_input = document.getElementById("sheet_search")
+    console.log(search_input)
     search_input.addEventListener("input", async function searchSheet(e) {
-        const value = e.target.value.trim().toLowerCase();
+        console.log(e.target.value)
+        const value = e.target.value.toLowerCase().trim();
         console.log(value)
-        let filteredSheet = data.filter((element) => {
-            let projects = element.project.includes(value)
-            let task = element.task.includes(value)
-            let description = element.description.includes(value)
+        console.log(time_data)
+        let filteredSheet = time_data.filter((element) => {
+            let projects = element.project.toLowerCase().includes(value)
+            let task = element.task.toLowerCase().includes(value)
+            let description = element.description.toLowerCase().includes(value)
             return projects || task || description;
         })
         console.log(filteredSheet)
@@ -477,15 +486,17 @@ document.body.addEventListener("click", (e) => {
         })
 
     })
+
 }
-searchData()*/
+searchData()
+
 
 
 //for search by dates
 let start_date = document.getElementById("start")
 start_date.addEventListener("change", async function checkDate(e) {
     let value = e.target.value
-    console.log(value)
+        console.log(value)
     let endDate = document.getElementById("end")
     endDate.min = value
     searchDate()
@@ -565,3 +576,112 @@ document.getElementById("logLink").addEventListener("click", async function logb
 
     }
 })
+
+//performing the search via selecting task/input
+async function searchProjects(params) {
+    let select_project = document.getElementById("project_Select")
+    select_project.addEventListener("change", async function searchProject(e) {
+        console.log(e.target.value)
+        let value = e.target.value.toLowerCase().trim();
+        let filteredSheet = time_data.filter((element) => {
+            let projects = element.project.toLowerCase().includes(value)
+            return projects;
+        })
+        console.log(filteredSheet)
+        let table = document.getElementById("populate_table")
+        console.log(table)
+        let tbody = table.querySelector("tbody")
+        tbody.innerHTML = ""
+        filteredSheet.forEach((rowData) => {
+            row1 = document.createElement('tr');
+
+            const newId = createCell(rowData._id)
+            newId.style.display = "none"
+            row1.appendChild(newId);
+
+            const newCel = createCell(rowData.date)
+            row1.appendChild(newCel);
+
+            const newCell = createCell(rowData.project)
+            row1.appendChild(newCell);
+
+
+            const newCell3 = createCell(rowData.task)
+            row1.appendChild(newCell3);
+
+            const newCell4 = createCell(rowData.description)
+            row1.appendChild(newCell4);
+
+            const newCell6 = createCell(rowData.work_hrs)
+            row1.appendChild(newCell6);
+
+            const newCell7 = createCell(rowData.remark)
+            row1.appendChild(newCell7);
+
+            const newCell5 = buttoncell();
+            row1.appendChild(newCell5)
+
+            tbody.appendChild(row1);
+            table.appendChild(tbody);
+
+        })
+    })
+
+
+}
+searchProjects()
+
+async function searchTask(params) {
+    let select_task = document.getElementById("task_select")
+    select_task.addEventListener("change", async function searchProject(e) {
+        console.log(e.target.value)
+        let value = e.target.value.toLowerCase().trim();
+        let filteredSheet = time_data.filter((element) => {
+            let task = element.task.toLowerCase().includes(value)
+            return task;
+        })
+        console.log(filteredSheet)
+        let table = document.getElementById("populate_table")
+        console.log(table)
+        let tbody = table.querySelector("tbody")
+        tbody.innerHTML = ""
+        filteredSheet.forEach((rowData) => {
+            row1 = document.createElement('tr');
+
+            const newId = createCell(rowData._id)
+            newId.style.display = "none"
+            row1.appendChild(newId);
+
+            const newCel = createCell(rowData.date)
+            row1.appendChild(newCel);
+
+            const newCell = createCell(rowData.project)
+            row1.appendChild(newCell);
+
+
+            const newCell3 = createCell(rowData.task)
+            row1.appendChild(newCell3);
+
+            const newCell4 = createCell(rowData.description)
+            row1.appendChild(newCell4);
+
+            const newCell6 = createCell(rowData.work_hrs)
+            row1.appendChild(newCell6);
+
+            const newCell7 = createCell(rowData.remark)
+            row1.appendChild(newCell7);
+
+            const newCell5 = buttoncell();
+            row1.appendChild(newCell5)
+
+            tbody.appendChild(row1);
+            table.appendChild(tbody);
+
+        })
+    })
+
+
+}
+searchTask()
+
+

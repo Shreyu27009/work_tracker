@@ -27,6 +27,7 @@ router.post("/signup/save", async (req, res) => {
     }
     try {
         let db = await connection();
+        let client = db.client();
         console.log("connected successfully")
         const collection = db.collection("users");
         console.log("collection connected")
@@ -99,6 +100,9 @@ router.post("/login", async (req, res) => {
     catch (err) {
         console.log(err)
         return res.json(500).json({ "message": "internal server error" })
+    }
+    finally {
+       // await db.client.close();
     }
 })
 

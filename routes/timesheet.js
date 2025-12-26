@@ -17,23 +17,24 @@ router.get("/page", checkUser, async (req, res) => {
 })
 
 router.post("/save", async (req, res) => {
+    let db;
     let user = req.cookies._id;
     console.log(req.body)
     let { date, project, task, description, work_hrs, remark } = req.body;
     if (!date || !project || !task || !description || !work_hrs) {
         return res.status(400).json({ "message": "all values are required" })
     }
-    if (work_hrs < 0 || work_hrs >= 24||work_hrs==0||work_hrs==24) {
+    if (work_hrs < 0 || work_hrs >= 24 || work_hrs == 0 || work_hrs == 24) {
         return res.status(400).json({ "message": "invalid hours of work" })
     }
     try {
-        let db = await connection();
+        db = await connection();
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected");
         let result = collection.insertOne({ "date": date, "project": project, "task": task, "description": description, "work_hrs": work_hrs, "remark": remark, "addedBy": user })
         return res.status(201).json({ "message": "added successfully" })
-       
+
 
     }
     catch (err) {
@@ -47,20 +48,19 @@ router.get("/shows", async function (req, res) {
     try {
         let user = req.cookies._id;
         let db = await connection();
-
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected")
-        let timesheets = []
+        let timesheet = []
         const result = collection.find({ "addedBy": `${user}` });
         for await (const document of result) {
             console.log(document);
-            timesheets.push(document)
+            timesheet.push(document)
         }
-        await db.client.close()
-        return res.status(200).json(timesheets)
+        return res.status(200).json(timesheet)
     }
     catch (err) {
+        console.error("error:", err);
         return res.status(500).json({ "message": "internal server error" })
     }
 })
@@ -68,18 +68,19 @@ router.get("/shows", async function (req, res) {
 
 //for getting the timesheet based on the _id
 router.get("/show", async function (req, res) {
+    let db;
     try {
         let user = req.cookies._id;
         let query = req.query.id;
         let id = new ObjectId(query)
         console.log(query)
-        let db = await connection();
+        db = await connection();
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected")
         const result = await collection.find({ "_id": id, "addedBy": `${user}` }).toArray();
         console.log(result)
-        await db.client.close()
+        //await db.client.close()
         return res.status(200).json(result)
     }
     catch (err) {
@@ -90,6 +91,7 @@ router.get("/show", async function (req, res) {
 
 //for updating the timesheet record
 router.put("/update", async (req, res) => {
+    let db;
     let user = req.cookies._id;
     console.log(req.body)
     let { _id, date, project, task, description, work_hrs, remark } = req.body;
@@ -97,11 +99,11 @@ router.put("/update", async (req, res) => {
     if (!date || !project || !task || !description || !work_hrs) {
         return res.status(400).json({ "message": "all values are required" })
     }
-    if (work_hrs < 0 || work_hrs > 24) {
+    if (work_hrs < 0 || work_hrs > 24 || work_hrs == 0 || work_hrs == 24) {
         return res.status(400).json({ "message": "invalid hours of work" })
     }
     try {
-        let db = await connection();
+        db = await connection();
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected");
@@ -120,11 +122,12 @@ router.put("/update", async (req, res) => {
 })
 
 router.delete("/delete", async (req, res) => {
+    let db;
     let { _id } = req.body;
     let id = new ObjectId(_id)
     console.log(id)
     try {
-        let db = await connection();
+        db = await connection();
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected");
@@ -133,15 +136,19 @@ router.delete("/delete", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "record deleted successfully" })
         }
-        await db.client.close();
+        //await db.client.close();
     }
     catch (err) {
         console.error(err);
         return res.status(500).json({ "messgage": "internal server error" })
     }
+    finally {
+        await db.client.close();
+    }
 })
 
 router.get("/getBydate", async (req, res) => {
+    let db;
     let user = req.cookies._id;
     let start = req.query.start;
     let end = req.query.end;
@@ -150,25 +157,22 @@ router.get("/getBydate", async (req, res) => {
         return res.status(400).json({ "message": "select the dates appropriately" })
     }
     try {
-        let db = await connection();
+        db = await connection();
         console.log("connected successfully")
         const collection = db.collection("timesheets");
         console.log("collection connected")
-        let timesheets = []
         let result = await collection.find({
             "addedBy": `${user}`,
             "date": { $gte: `${start}`, $lte: `${end}` }
-        });
-        for await (const document of result) {
-            console.log(document);
-            timesheets.push(document)
-        }
-        await db.client.close()
-        return res.status(200).json(timesheets)
+        }).toArray()
+        return res.status(200).json(result)
     }
     catch (err) {
         console.error(err);
         return res.status(500).json({ "message": "internal server error" })
+    }
+    finally {
+        await db.client.close();
     }
 })
 
