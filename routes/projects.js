@@ -41,7 +41,6 @@ router.post("/save", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(201).json({ "message": "project added sucessfully" })
         }
-        //await db.client.close()
     }
     catch (err) {
         if (err.code === 11000) {
@@ -50,9 +49,6 @@ router.post("/save", async (req, res) => {
         console.error(err);
         return res.status(500).json({ "message": "internal server error" })
     }
-    finally {
-         await db.client.close();
-    }
 
 })
 
@@ -60,6 +56,7 @@ router.get("/show", async (req, res) => {
     let db;
     try {
         db = await connection();
+        console.log(db)
         console.log("connected successfully")
         const collection = db.collection("projects");
         console.log("collection connected");
@@ -76,9 +73,6 @@ router.get("/show", async (req, res) => {
         console.error(err);
         return res.status(400).json({ "message": "something went wrong" })
     }
-    finally {
-       // await db.client.close();
-    }
 })
 
 //for getting the single project
@@ -91,7 +85,7 @@ router.get("/shows", async (req, res) => {
         const collection = db.collection("projects");
         const result = await collection.find({ "_id": id }).toArray();
         console.log(result)
-        await db.client.close()
+        //await db.client.close()
         return res.status(200).json(result)
     }
     catch (err) {
@@ -109,7 +103,7 @@ router.get("/get", async (req, res) => {
         const collection = db.collection("projects");
         const result = await collection.find({ "project": name }).toArray();
         console.log(result)
-        await db.client.close()
+       // await db.client.close()
         return res.status(200).json(result)
     }
     catch (err) {
@@ -136,7 +130,7 @@ router.put("/update", async (req, res) => {
         console.log("collection connected");
         let result = await collection.updateOne({ "_id": id }, { $set: { "project": project, "description": description, "updated_by": user } })
         if (result.acknowledged === true) {
-            await db.client.close()
+            //await db.client.close()
             return res.status(200).json({ "message": "project updated sucessfully" })
         }
     }

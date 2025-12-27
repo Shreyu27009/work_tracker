@@ -27,7 +27,6 @@ router.post("/signup/save", async (req, res) => {
     }
     try {
         let db = await connection();
-        let client = db.client();
         console.log("connected successfully")
         const collection = db.collection("users");
         console.log("collection connected")
@@ -39,7 +38,7 @@ router.post("/signup/save", async (req, res) => {
         if (result.acknowledged == true) {
             return res.status(200).json({ "message": "user registered successfully" })
         }
-        await db.client.close()
+       // await db.client.close()
     }
     catch (err) {
         if (err.code === 11000) {

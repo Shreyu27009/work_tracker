@@ -36,7 +36,7 @@ router.post("/save", async (req, res) => {
         if (result.acknowledged == true) {
             return res.status(201).json({ "message": "task added successfully" })
         }
-        await db.client.close()
+      //  await db.client.close()
     }
     catch (err) {
         if (err.code === 11000) {
@@ -80,7 +80,7 @@ router.get("/show", async (req, res) => {
         db = await connection();
         const collection = db.collection("tasks");
         const result = await collection.find({ "_id": id }).toArray();
-        await db.client.close()
+       // await db.client.close()
         return res.status(200).json(result)
     }
     catch (err) {
@@ -109,7 +109,7 @@ router.put("/update", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "task updated sucessfully" })
         }
-        await db.client.close()
+        //await db.client.close()
     }
     catch (err) {
         console.error(err);
@@ -137,14 +137,14 @@ router.delete("/delete", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "task deleted sucessfully" })
         }
-        await db.client.close()
+       // await db.client.close()
     }
     catch (err) {
         console.error(err)
         return res.status(500).json({ "message": "something went wrong" })
     }
     finally {
-        await db.client.close();
+       // await db.client.close();
     }
 })
 
@@ -165,7 +165,7 @@ router.get("/get", async (req, res) => {
         return res.status(400).json({ "message": "something went wrong" })
     }
     finally {
-        await db.client.close();
+       // await db.client.close();
     }
 })
 

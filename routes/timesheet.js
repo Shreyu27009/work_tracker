@@ -112,7 +112,7 @@ router.put("/update", async (req, res) => {
         if (result.acknowledged === true) {
             return res.status(200).json({ "message": "updated successfully" })
         }
-        await db.client.close()
+       // await db.client.close()
 
     }
     catch (err) {
@@ -143,7 +143,7 @@ router.delete("/delete", async (req, res) => {
         return res.status(500).json({ "messgage": "internal server error" })
     }
     finally {
-        await db.client.close();
+      //  await db.client.close();
     }
 })
 
@@ -172,7 +172,7 @@ router.get("/getBydate", async (req, res) => {
         return res.status(500).json({ "message": "internal server error" })
     }
     finally {
-        await db.client.close();
+       // await db.client.close();
     }
 })
 
