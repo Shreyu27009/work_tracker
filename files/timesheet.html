@@ -17,12 +17,12 @@
         <a id="logLink">Logout</a>
     </div>
     <div class="div1">
-        <h1>Home Page</h1>
+        <h1 id="heading">Home Page</h1>
     </div>
-    <div class="div1">
+    <div class="div1" id="searchBy">
         <input type="search" id="sheet_search" placeholder="search across site" />
     </div>
-    <div class="div1">
+    <div class="div1" id="selectBy">
         <label for="project_Select">select project</label>
         <select id="project_Select"></select>
 
@@ -30,7 +30,7 @@
         <select id="task_select"></select>
 
     </div>
-    <div class="div1">
+    <div class="div1" id="bydate">
         <input type="date" id="start" />
         <input type="date" id="end" />
 
@@ -74,7 +74,7 @@
     </div>
     <div class="div1">
         <form id="form_cell" style="display: none;">
-            <button id="backbtn" style="width: 50px;" ;>back</button>
+            <button id="backbtn" style="width: 70px;">back</button>
             <label for="taskDate">Enter date</label>
             <input type="date" id="taskDate">
 
@@ -93,6 +93,7 @@
             <label for="remark">remark</label>
             <input type="text" id="remark">
             <input type="text" id="timesheet_id" style="display: none;">
+            
             <button type="button" id="submitBtn">submit</button>
             <button type="button" id="updateBtn">update</button>
         </form>

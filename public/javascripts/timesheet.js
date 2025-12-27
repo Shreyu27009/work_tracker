@@ -1,4 +1,13 @@
 let time_data = [];
+let heading = document.getElementById("heading")
+heading.textContent = "Home Page"
+let search1 = document.getElementById("searchBy")
+search1.style.display = ""
+let select1 = document.getElementById("selectBy")
+select1.style.display = ""
+let date1 = document.getElementById("bydate")
+date1.style.display = ""
+
 async function getData() {
     let response = await fetch("http://localhost:8080/home/shows", {
         method: "GET",
@@ -79,17 +88,31 @@ let addBtn = document.getElementById("add")
 addBtn.style.display = ""
 addBtn.addEventListener("click", async function addData(e) {
     addBtn.style.display = "none"
-    /*document.getElementById("taskDate").value = "";
+    document.getElementById("taskDate").value = "";
     document.getElementById("select_project").value = "";
     document.getElementById("select_task").value = "";
     document.getElementById("description").value = "";
     document.getElementById("work_hrs").value = "";
-    document.getElementById("remark").value = "";*/
+    document.getElementById("remark").value = "";
+
     let table = document.getElementById("populate_table")
     table.style.display = "none"
 
     let form_cell = document.getElementById("form_cell")
     form_cell.style.display = "block"
+    //window.location.reload();
+
+    //for showing the form properly
+    let search1 = document.getElementById("searchBy")
+    search1.style.display = "none"
+    let select1 = document.getElementById("selectBy")
+    select1.style.display = "none"
+    let date1 = document.getElementById("bydate")
+    date1.style.display = "none"
+
+    let heading = document.getElementById("heading")
+    heading.textContent = "Add timesheet"
+
 
     let input1 = document.getElementById("taskDate")
     let today = new Date()
@@ -159,6 +182,16 @@ submitbtn.addEventListener("click", async function saveData(e) {
         form_cell.style.display = "none"
         populateTable()
 
+        let heading = document.getElementById("heading")
+        heading.textContent = "Home Page"
+
+        let search1 = document.getElementById("searchBy")
+        search1.style.display = ""
+        let select1 = document.getElementById("selectBy")
+        select1.style.display = ""
+        let date1 = document.getElementById("bydate")
+        date1.style.display = ""
+
 
     }
     if (response.status === 400 || response.status === 500) {
@@ -205,6 +238,7 @@ updateBtn.addEventListener("click", async function updateData(e) {
         form_cell.style.display = "none"
         let addBtn = document.getElementById("add")
         addBtn.style.display = ""
+
         populateTable()
         document.getElementById("taskDate").value = "";
         document.getElementById("select_project").value = "";
@@ -212,6 +246,18 @@ updateBtn.addEventListener("click", async function updateData(e) {
         document.getElementById("description").value = "";
         document.getElementById("work_hrs").value = "";
         document.getElementById("remark").value = "";
+
+        let heading = document.getElementById("heading")
+        heading.textContent = "Home Page"
+
+        let search1 = document.getElementById("searchBy")
+        search1.style.display = ""
+        let select1 = document.getElementById("selectBy")
+        select1.style.display = ""
+        let date1 = document.getElementById("bydate")
+        date1.style.display = ""
+
+
     }
     if (response.status === 400 || response.status === 500) {
         alert(`${data.message}`)
@@ -391,6 +437,16 @@ document.body.addEventListener("click", (e) => {
                 let addBtn = document.getElementById("add")
                 addBtn.style.display = "none"
 
+                let search1 = document.getElementById("searchBy")
+                search1.style.display = "none"
+                let select1 = document.getElementById("selectBy")
+                select1.style.display = "none"
+                let date1 = document.getElementById("bydate")
+                date1.style.display = "none"
+                let heading = document.getElementById("heading")
+                heading.textContent = "Update Timesheet"
+
+
             })
         }
         getSheet()
@@ -431,72 +487,13 @@ document.body.addEventListener("click", (e) => {
 
 
 
-//search across the timesheet
-async function searchData() {
-    let search_input = document.getElementById("sheet_search")
-    console.log(search_input)
-    search_input.addEventListener("input", async function searchSheet(e) {
-        console.log(e.target.value)
-        const value = e.target.value.toLowerCase().trim();
-        console.log(value)
-        console.log(time_data)
-        let filteredSheet = time_data.filter((element) => {
-            let projects = element.project.toLowerCase().includes(value)
-            let task = element.task.toLowerCase().includes(value)
-            let description = element.description.toLowerCase().includes(value)
-            return projects || task || description;
-        })
-        console.log(filteredSheet)
-        let table = document.getElementById("populate_table")
-        console.log(table)
-        let tbody = table.querySelector("tbody")
-        tbody.innerHTML = ""
-        filteredSheet.forEach((rowData) => {
-            row1 = document.createElement('tr');
-
-            const newId = createCell(rowData._id)
-            newId.style.display = "none"
-            row1.appendChild(newId);
-
-            const newCel = createCell(rowData.date)
-            row1.appendChild(newCel);
-
-            const newCell = createCell(rowData.project)
-            row1.appendChild(newCell);
-
-
-            const newCell3 = createCell(rowData.task)
-            row1.appendChild(newCell3);
-
-            const newCell4 = createCell(rowData.description)
-            row1.appendChild(newCell4);
-
-            const newCell6 = createCell(rowData.work_hrs)
-            row1.appendChild(newCell6);
-
-            const newCell7 = createCell(rowData.remark)
-            row1.appendChild(newCell7);
-
-            const newCell5 = buttoncell();
-            row1.appendChild(newCell5)
-
-            tbody.appendChild(row1);
-            table.appendChild(tbody);
-
-        })
-
-    })
-
-}
-searchData()
-
 
 
 //for search by dates
 let start_date = document.getElementById("start")
 start_date.addEventListener("change", async function checkDate(e) {
     let value = e.target.value
-        console.log(value)
+    console.log(value)
     let endDate = document.getElementById("end")
     endDate.min = value
     searchDate()
@@ -511,8 +508,6 @@ endDate.addEventListener("change", async function checkDate(e) {
     searchDate()
 })
 
-/*let search_button = document.getElementById("search_date")
-search_button.addEventListener("click", searchDate)*/
 
 async function searchDate() {
     let value1 = document.getElementById("start").value
@@ -564,6 +559,7 @@ async function searchDate() {
 
         })
     }
+
 }
 
 
@@ -577,111 +573,75 @@ document.getElementById("logLink").addEventListener("click", async function logb
     }
 })
 
-//performing the search via selecting task/input
-async function searchProjects(params) {
-    let select_project = document.getElementById("project_Select")
-    select_project.addEventListener("change", async function searchProject(e) {
-        console.log(e.target.value)
-        let value = e.target.value.toLowerCase().trim();
-        let filteredSheet = time_data.filter((element) => {
-            let projects = element.project.toLowerCase().includes(value)
-            return projects;
-        })
-        console.log(filteredSheet)
-        let table = document.getElementById("populate_table")
-        console.log(table)
-        let tbody = table.querySelector("tbody")
-        tbody.innerHTML = ""
-        filteredSheet.forEach((rowData) => {
-            row1 = document.createElement('tr');
+let search_input = document.getElementById("sheet_search")
+search_input.addEventListener("input", applyfilters)
 
-            const newId = createCell(rowData._id)
-            newId.style.display = "none"
-            row1.appendChild(newId);
+let select_project = document.getElementById("project_Select")
+select_project.addEventListener("change", applyfilters)
 
-            const newCel = createCell(rowData.date)
-            row1.appendChild(newCel);
+let select_task = document.getElementById("task_select")
+select_task.addEventListener("change", applyfilters)
 
-            const newCell = createCell(rowData.project)
-            row1.appendChild(newCell);
+async function applyfilters() {
+    let project_name = document.getElementById("project_Select")
+    console.log(project_name)
+    let value1 = project_name.value.toLowerCase()
+    console.log(value1)
+
+    let task_name = document.getElementById("task_select")
+    console.log(task_name)
+    let value2 = task_name.value.toLowerCase()
+    console.log(value2)
+
+    let search_data = document.getElementById("sheet_search")
+    console.log(search_data)
+    let value3 = search_data.value.toLowerCase().trim()
+    console.log(value3)
+
+    let filteredSheet = time_data.filter((element) => {
+        let projects = element.project.toLowerCase().includes(value1)
+        let task = element.task.toLowerCase().includes(value2)
+        let description = element.description.toLowerCase().includes(value3)
+        return projects && task && description;
+    })
+    console.log(filteredSheet)
+    let table = document.getElementById("populate_table")
+    console.log(table)
+    let tbody = table.querySelector("tbody")
+    tbody.innerHTML = ""
+    filteredSheet.forEach((rowData) => {
+        row1 = document.createElement('tr');
+
+        const newId = createCell(rowData._id)
+        newId.style.display = "none"
+        row1.appendChild(newId);
+
+        const newCel = createCell(rowData.date)
+        row1.appendChild(newCel);
+
+        const newCell = createCell(rowData.project)
+        row1.appendChild(newCell);
 
 
-            const newCell3 = createCell(rowData.task)
-            row1.appendChild(newCell3);
+        const newCell3 = createCell(rowData.task)
+        row1.appendChild(newCell3);
 
-            const newCell4 = createCell(rowData.description)
-            row1.appendChild(newCell4);
+        const newCell4 = createCell(rowData.description)
+        row1.appendChild(newCell4);
 
-            const newCell6 = createCell(rowData.work_hrs)
-            row1.appendChild(newCell6);
+        const newCell6 = createCell(rowData.work_hrs)
+        row1.appendChild(newCell6);
 
-            const newCell7 = createCell(rowData.remark)
-            row1.appendChild(newCell7);
+        const newCell7 = createCell(rowData.remark)
+        row1.appendChild(newCell7);
 
-            const newCell5 = buttoncell();
-            row1.appendChild(newCell5)
+        const newCell5 = buttoncell();
+        row1.appendChild(newCell5)
 
-            tbody.appendChild(row1);
-            table.appendChild(tbody);
+        tbody.appendChild(row1);
+        table.appendChild(tbody);
 
-        })
     })
 
-
 }
-searchProjects()
-
-async function searchTask(params) {
-    let select_task = document.getElementById("task_select")
-    select_task.addEventListener("change", async function searchProject(e) {
-        console.log(e.target.value)
-        let value = e.target.value.toLowerCase().trim();
-        let filteredSheet = time_data.filter((element) => {
-            let task = element.task.toLowerCase().includes(value)
-            return task;
-        })
-        console.log(filteredSheet)
-        let table = document.getElementById("populate_table")
-        console.log(table)
-        let tbody = table.querySelector("tbody")
-        tbody.innerHTML = ""
-        filteredSheet.forEach((rowData) => {
-            row1 = document.createElement('tr');
-
-            const newId = createCell(rowData._id)
-            newId.style.display = "none"
-            row1.appendChild(newId);
-
-            const newCel = createCell(rowData.date)
-            row1.appendChild(newCel);
-
-            const newCell = createCell(rowData.project)
-            row1.appendChild(newCell);
-
-
-            const newCell3 = createCell(rowData.task)
-            row1.appendChild(newCell3);
-
-            const newCell4 = createCell(rowData.description)
-            row1.appendChild(newCell4);
-
-            const newCell6 = createCell(rowData.work_hrs)
-            row1.appendChild(newCell6);
-
-            const newCell7 = createCell(rowData.remark)
-            row1.appendChild(newCell7);
-
-            const newCell5 = buttoncell();
-            row1.appendChild(newCell5)
-
-            tbody.appendChild(row1);
-            table.appendChild(tbody);
-
-        })
-    })
-
-
-}
-searchTask()
-
 
